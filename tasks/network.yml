@@ -35,11 +35,11 @@
     group: "{{ configdrive_group | default(omit) }}"
     mode: 0755
     state: directory
-    recurse: yes
+    recurse: true
   with_items:
     - "{{ configdrive_os_network_path }}"
 
-- name: Setup resolver file resolv.conf 
+- name: Setup resolver file resolv.conf
   template:
     src: "resolv.conf.j2"
     dest: "{{ _configdrive_content_path }}/etc/resolv.conf"
@@ -58,7 +58,7 @@
   when: configdrive_hosts is defined and configdrive_hosts
 
 - name: Setup network/interfaces for Debian
-  template: 
+  template:
     src: "interfaces.j2"
     dest: "{{ _configdrive_content_path }}/etc/network/interfaces"
     owner: "{{ configdrive_user | default(omit) }}"
@@ -88,7 +88,7 @@
   with_items: "{{ configdrive_network_device_list }}"
 
 - name: Setup route configuration for RedHat
-  template: 
+  template:
     src: "route_{{ ansible_facts.os_family }}.j2"
     dest: "{{ _configdrive_content_path }}/{{ configdrive_os_network_path }}/route-{{ item.device }}"
     owner: "{{ configdrive_user | default(omit) }}"
@@ -96,4 +96,3 @@
     mode: 0644
   when: item.route is defined and configdrive_os_family == 'RedHat'
   with_items: "{{ configdrive_network_device_list }}"
-

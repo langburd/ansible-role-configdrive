@@ -5,7 +5,7 @@
     owner: "{{ configdrive_user | default(omit) }}"
     group: "{{ configdrive_group  | default(omit) }}"
     mode: 0755
-    recurse: yes
+    recurse: true
     state: directory
   with_items:
     - "openstack/{{ configdrive_content_tmproot_dir }}"
@@ -34,7 +34,7 @@
 - name: Delete temporary folder
   file:
     state: absent
-    force: yes
+    force: true
     name: "{{ _configdrive_content_path }}"
 
 - name: Create meta_data.json
@@ -55,6 +55,7 @@
     owner: "{{ configdrive_user | default(omit) }}"
     group: "{{ configdrive_group | default(omit) }}"
     mode: 0644
+    remote_src: true
   with_items:
     - "openstack/2012-08-10"
     - "openstack/latest"
@@ -62,6 +63,6 @@
 
 - name: Create configdrive volume file
   shell: >
-    genisoimage -R -V "{{ configdrive_voume_name }}" "{{ configdrive_config_dir }}/{{ configdrive_instance_dir }}" 
+    genisoimage -R -input-charset utf-8 -V "{{ configdrive_voume_name }}" "{{ configdrive_config_dir }}/{{ configdrive_instance_dir }}"
     | gzip -c | base64 > "{{ configdrive_volume_path }}/{{ configdrive_instance_dir }}.gz"
   when: configdrive_volume_path is defined and not configdrive_volume_path is none

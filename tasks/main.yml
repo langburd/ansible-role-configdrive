@@ -6,7 +6,7 @@
   with_dict: "{{ configdrive_required_packages }}"
   when: configdrive_check_required_packages
   tags: ["configdrive", "install", "packages"]
-  become: True
+  become: true
 
 - name: Include OS specific variables
   include_vars: "{{ configdrive_os_family }}.yml"
@@ -22,7 +22,7 @@
     owner: "{{ configdrive_user | default(omit) }}"
     group: "{{ configdrive_group  | default(omit) }}"
     mode: 0755
-    recurse: yes
+    recurse: true
     state: directory
   with_items:
     - "openstack/2012-08-10"
@@ -33,11 +33,10 @@
   tags: ["configdrive", "core"]
 
 - name: Cleanup instance configdrive folder
-  file: 
+  file:
     state: absent
-    force: yes 
+    force: true
     name: "{{ configdrive_config_dir }}/{{ configdrive_instance_dir }}"
   when: >
-    configdrive_config_dir_delete is defined 
+    configdrive_config_dir_delete is defined
     and configdrive_config_dir_delete
-
